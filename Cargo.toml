@@ -1,0 +1,12 @@
+[package]
+name = "polygon-to-cells-api"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+local-robot-map = { path = "../local-robot-map" }
+axum = "0.6.18"
+tokio = { version = "*", features = [ "macros", "rt-multi-thread" ] }
+serde = { version = "1.0", features = ["derive"] }
