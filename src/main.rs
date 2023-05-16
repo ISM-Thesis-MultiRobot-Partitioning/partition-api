@@ -13,7 +13,10 @@ use polygon_handler::polygon_handler;
 async fn main() {
     let app = Router::new()
         .route("/", get(help_message))
-        .route("/PolygonToCellMap", post(|e| polygon_handler(e, bydistance)))
+        .route(
+            "/PolygonToCellMap",
+            post(|e| polygon_handler(e, bydistance)),
+        )
         .route("/test", post(test_add));
 
     axum::Server::bind(&"0.0.0.0:8000".parse().unwrap())
