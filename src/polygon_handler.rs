@@ -1,3 +1,5 @@
+use std::time::Instant;
+
 use axum::{http::StatusCode, Json};
 use local_robot_map::{CellMap, LocalMap, Partition, PartitionError::NoPartitioningAlgorithm};
 
@@ -8,6 +10,8 @@ pub async fn polygon_handler(
     Json(data): Json<types::InputData>,
     algorithm: fn(LocalMap<CellMap>) -> LocalMap<CellMap>,
 ) -> Result<(StatusCode, Json<types::OutputData>), (StatusCode, &'static str)> {
+    println!("=== Request received! ===");
+    let now = Instant::now();
     let mut map: LocalMap<CellMap> = helpers::make_localmap(
         data.vertices
             .into_iter()
@@ -23,7 +27,7 @@ pub async fn polygon_handler(
 
     map.set_partition_algorithm(algorithm);
 
-    match map.partition() {
+    let result = match map.partition() {
         Ok(map) => Ok((
             StatusCode::OK,
             Json(types::OutputData::from_cellmap(map.map())),
@@ -34,5 +38,8 @@ pub async fn polygon_handler(
                 "No partitioning aglrotihm was provided",
             )),
         },
-    }
+    };
+
+    println!("Time elapsed: {:?} ms", now.elapsed().as_micros() as f64 / 1000.0);
+    result
 }
