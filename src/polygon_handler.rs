@@ -40,6 +40,6 @@ pub async fn polygon_handler(
         },
     };
 
-    println!("Time elapsed: {:?} ms", now.elapsed().as_micros() as f64 / 1000.0);
+    println!("Time elapsed: {:?}", now.elapsed());
     result
 }
