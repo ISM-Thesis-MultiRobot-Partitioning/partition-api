@@ -2,7 +2,7 @@ use axum::http::StatusCode;
 use axum::response::Html;
 use axum::routing::{get, post};
 use axum::{Json, Router};
-use local_robot_map::{CellMap, LocalMap, MapState};
+use local_robot_map::{CellMap, LocalMap, MapState, RealWorldLocation};
 use local_robot_map::{Location, MaskMapState};
 use serde::{Deserialize, Serialize};
 
@@ -45,33 +45,6 @@ async fn test_add(Json(input): Json<Input>) -> (StatusCode, Json<Output>) {
     )
 }
 
-// let vertices = vec![
-//     RealWorldLocation::from_xyz(50.0, 100.0, 0.0),
-//     RealWorldLocation::from_xyz(200.0, 30.0, 0.0),
-//     RealWorldLocation::from_xyz(350.0, 120.0, 0.0),
-// ];
-//
-// let polygonmap = PolygonMap::new(vertices);
-// let resolution = AxisResolution::uniform(1.0);
-// let cellmap = polygonmap.to_cell_map(resolution);
-//
-// let my_position = RealWorldLocation::from_xyz(100.0, 80.0, 0.0);
-// // let my_position = RealWorldLocation::from_xyz(20.0, 12.0, 0.0);
-// let other_positions = vec![
-//     // RealWorldLocation::from_xyz(299.0, 100.0, 0.0),
-//     // RealWorldLocation::from_xyz(200.0, 60.0, 0.0),
-//     RealWorldLocation::from_xyz(130.0, 50.0, 0.0),
-//     RealWorldLocation::from_xyz(80.0, 80.0, 0.0),
-// ];
-//
-// let mut map = LocalMap::new_noexpand(cellmap, my_position,
-// other_positions).unwrap();
-//
-// let mut map = make_localmap(vertices, resolution, my_position,
-// other_positions); map.set_partition_algorithm(bydistance);
-// let map = map.partition().unwrap();
-// map.as_image().save("the-map.png").unwrap();
-
 async fn help_message() -> Html<&'static str> {
     Html(
         "
@@ -84,7 +57,7 @@ async fn help_message() -> Html<&'static str> {
 }
 
 fn bydistance(mut map: LocalMap<CellMap>) -> LocalMap<CellMap> {
-    let mut cells_to_assign = Vec::new();
+    let mut cells_to_assign: Vec<RealWorldLocation> = Vec::new();
 
     for cell in map.map().get_map_state(MapState::Unexplored) {
         let my_dist = map.my_position().distance(cell.location());
