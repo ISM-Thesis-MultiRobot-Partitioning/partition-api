@@ -881,6 +881,16 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b7e5500299e16ebb147ae15a00a942af264cf3688f47923b8fc2cd5858f23ad3"
 
 [[package]]
+name = "partition-api"
+version = "0.1.0"
+dependencies = [
+ "axum",
+ "local-robot-map",
+ "serde",
+ "tokio",
+]
+
+[[package]]
 name = "pdqselect"
 version = "0.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -935,16 +945,6 @@ dependencies = [
  "fdeflate",
  "flate2",
  "miniz_oxide 0.7.1",
-]
-
-[[package]]
-name = "polygon-to-cells-api"
-version = "0.1.0"
-dependencies = [
- "axum",
- "local-robot-map",
- "serde",
- "tokio",
 ]
 
 [[package]]

@@ -1,5 +1,5 @@
 [package]
-name = "polygon-to-cells-api"
+name = "partition-api"
 version = "0.1.0"
 edition = "2021"
 
