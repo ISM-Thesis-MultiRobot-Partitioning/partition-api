@@ -14,7 +14,9 @@ async fn main() {
         post(|e| polygon_handler(e, bydistance)),
     );
 
-    axum::Server::bind(&"0.0.0.0:8000".parse().unwrap())
+    let address = "0.0.0.0:8000";
+    println!("Serving at {address} ...");
+    axum::Server::bind(&address.parse().unwrap())
         .serve(app.into_make_service())
         .await
         .unwrap();
