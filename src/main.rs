@@ -1,48 +1,23 @@
-use axum::http::StatusCode;
 use axum::response::Html;
 use axum::routing::{get, post};
-use axum::{Json, Router};
+use axum::Router;
 use local_robot_map::{CellMap, LocalMap, MapState, RealWorldLocation};
 use local_robot_map::{Location, MaskMapState};
-use serde::{Deserialize, Serialize};
 
 mod polygon_handler;
 use polygon_handler::polygon_handler;
 
 #[tokio::main]
 async fn main() {
-    let app = Router::new()
-        .route("/", get(help_message))
-        .route(
-            "/PolygonToCellMap",
-            post(|e| polygon_handler(e, bydistance)),
-        )
-        .route("/test", post(test_add));
+    let app = Router::new().route("/", get(help_message)).route(
+        "/PolygonToCellMap",
+        post(|e| polygon_handler(e, bydistance)),
+    );
 
     axum::Server::bind(&"0.0.0.0:8000".parse().unwrap())
         .serve(app.into_make_service())
         .await
         .unwrap();
-}
-
-#[derive(Deserialize)]
-struct Input {
-    a: i32,
-    b: i32,
-}
-
-#[derive(Serialize)]
-struct Output {
-    result: i32,
-}
-
-async fn test_add(Json(input): Json<Input>) -> (StatusCode, Json<Output>) {
-    (
-        StatusCode::OK,
-        Json(Output {
-            result: input.a + input.b,
-        }),
-    )
 }
 
 async fn help_message() -> Html<&'static str> {
