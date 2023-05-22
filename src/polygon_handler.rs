@@ -1,7 +1,9 @@
 use std::time::Instant;
 
 use axum::{http::StatusCode, Json};
-use local_robot_map::{CellMap, LocalMap, Partition, PartitionError::NoPartitioningAlgorithm, Visualize};
+use local_robot_map::{
+    CellMap, LocalMap, Partition, PartitionError::NoPartitioningAlgorithm, Visualize,
+};
 
 mod helpers;
 mod types;
@@ -31,10 +33,10 @@ pub async fn polygon_handler(
         Ok(map) => {
             map.as_image().save("map.png").unwrap();
             Ok((
-                    StatusCode::OK,
-                    Json(types::OutputData::from_cellmap(map.map())),
-                ))
-        },
+                StatusCode::OK,
+                Json(types::OutputData::from_cellmap(map.map())),
+            ))
+        }
         Err(e) => match e {
             NoPartitioningAlgorithm => Err((
                 StatusCode::NOT_IMPLEMENTED,
