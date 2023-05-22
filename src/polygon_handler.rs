@@ -40,7 +40,7 @@ pub async fn polygon_handler(
         Err(e) => match e {
             NoPartitioningAlgorithm => Err((
                 StatusCode::NOT_IMPLEMENTED,
-                "No partitioning aglrotihm was provided",
+                "No partitioning algortihm was provided",
             )),
         },
     };
