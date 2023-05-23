@@ -5,14 +5,20 @@ use local_robot_map::{CellMap, LocalMap, MapState, RealWorldLocation};
 use local_robot_map::{Location, MaskMapState};
 
 mod polygon_handler;
-use polygon_handler::polygon_handler;
+use polygon_handler::{polygon_handler, polygon_handler_shm};
 
 #[tokio::main]
 async fn main() {
-    let app = Router::new().route("/", get(help_message)).route(
-        "/PolygonToCellMap",
-        post(|e| polygon_handler(e, bydistance)),
-    );
+    let app = Router::new()
+        .route("/", get(help_message))
+        .route(
+            "/PolygonToCellMap",
+            post(|e| polygon_handler(e, bydistance)),
+        )
+        .route(
+            "/PolygonToCellMapShm",
+            post(|e| polygon_handler_shm(e, bydistance)),
+        );
 
     let address = "0.0.0.0:8000";
     println!("Serving at {address} ...");
