@@ -85,24 +85,35 @@ pub async fn polygon_handler_filepath(
         }
     };
 
+    println!("Read data from file ({:?})", now.elapsed());
+
     let result = match helpers::partition_input_data(data, algorithm) {
-        Ok(map) => match serde_json::to_string(&types::OutputData::from_cellmap(map.map())) {
-            Ok(json_string) => match std::fs::write(&file_path, json_string) {
-                Ok(_) => Ok(StatusCode::OK),
+        Ok(map) => {
+            println!("Partitioned map ({:?})", now.elapsed());
+            match serde_json::to_string(&types::OutputData::from_cellmap(map.map())) {
+                Ok(json_string) => {
+                    println!("Converted cellmap to JSON string ({:?})", now.elapsed());
+                    match std::fs::write(&file_path, json_string) {
+                        Ok(_) => {
+                            println!("Wrote data back to file ({:?})", now.elapsed());
+                            Ok(StatusCode::OK)
+                        }
+                        Err(e) => {
+                            return Err((
+                                StatusCode::INTERNAL_SERVER_ERROR,
+                                format!("Could not write file: {e}"),
+                            ))
+                        }
+                    }
+                }
                 Err(e) => {
                     return Err((
                         StatusCode::INTERNAL_SERVER_ERROR,
-                        format!("Could not write file: {e}"),
+                        format!("Could not serialize output to JSON string: {e}"),
                     ))
                 }
-            },
-            Err(e) => {
-                return Err((
-                    StatusCode::INTERNAL_SERVER_ERROR,
-                    format!("Could not serialize output to JSON string: {e}"),
-                ))
             }
-        },
+        }
         Err(e) => match e {
             NoPartitioningAlgorithm => Err((
                 StatusCode::NOT_IMPLEMENTED,
