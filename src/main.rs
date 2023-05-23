@@ -5,7 +5,7 @@ use local_robot_map::{CellMap, LocalMap, MapState, RealWorldLocation};
 use local_robot_map::{Location, MaskMapState};
 
 mod polygon_handler;
-use polygon_handler::{polygon_handler, polygon_handler_filepath, polygon_handler_shm};
+use polygon_handler::{polygon_handler_json, polygon_handler_filepath, polygon_handler_shm};
 
 #[tokio::main]
 async fn main() {
@@ -13,7 +13,7 @@ async fn main() {
         .route("/", get(help_message))
         .route(
             "/PolygonToCellMap",
-            post(|e| polygon_handler(e, bydistance)),
+            post(|e| polygon_handler_json(e, bydistance)),
         )
         .route(
             "/PolygonToCellMapShm",
