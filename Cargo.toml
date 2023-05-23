@@ -10,3 +10,4 @@ local-robot-map = { path = "../local-robot-map" }
 axum = "0.6.18"
 tokio = { version = "*", features = [ "macros", "rt-multi-thread" ] }
 serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
