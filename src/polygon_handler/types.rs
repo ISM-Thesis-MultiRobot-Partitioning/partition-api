@@ -1,4 +1,4 @@
-use local_robot_map::{AxisResolution, CellMap, RealWorldLocation};
+use local_robot_map::{AxisResolution, CellMap, Coords, RealWorldLocation};
 use serde::{Deserialize, Serialize};
 
 #[derive(Deserialize, Serialize, Debug)]
@@ -17,6 +17,26 @@ impl CoordXYZ {
     }
 }
 
+impl From<&Coords> for CoordXYZ {
+    fn from(value: &Coords) -> Self {
+        CoordXYZ {
+            x: value.x,
+            y: value.y,
+            z: value.z,
+        }
+    }
+}
+
+impl From<&AxisResolution> for CoordXYZ {
+    fn from(value: &AxisResolution) -> Self {
+        CoordXYZ {
+            x: value.x,
+            y: value.y,
+            z: value.z,
+        }
+    }
+}
+
 #[derive(Deserialize, Debug)]
 pub struct InputData {
     pub(crate) vertices: Vec<CoordXYZ>,
@@ -27,7 +47,9 @@ pub struct InputData {
 
 #[derive(Serialize)]
 pub struct OutputData {
-    pub(crate) cells: Vec<(CoordXYZ, &'static str)>,
+    cells: Vec<(CoordXYZ, &'static str)>,
+    offset: CoordXYZ,
+    resolution: CoordXYZ,
 }
 
 impl OutputData {
@@ -47,6 +69,8 @@ impl OutputData {
                     )
                 })
                 .collect(),
+            offset: map.offset().into(),
+            resolution: map.resolution().into(),
         }
     }
 }
