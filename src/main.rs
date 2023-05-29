@@ -1,11 +1,14 @@
 use axum::response::Html;
 use axum::routing::{get, post};
 use axum::Router;
-use local_robot_map::{CellMap, LocalMap, MapState, RealWorldLocation};
+use local_robot_map::{CellMap, LocalMap, LocationType, MapState, RealWorldLocation};
 use local_robot_map::{Location, MaskMapState};
 
 mod polygon_handler;
-use polygon_handler::{polygon_handler_json, polygon_handler_filepath, polygon_handler_shm};
+use polygon_handler::{
+    polygon_handler_filepath, polygon_handler_frontiers_json, polygon_handler_json,
+    polygon_handler_shm,
+};
 
 #[tokio::main]
 async fn main() {
@@ -14,6 +17,10 @@ async fn main() {
         .route(
             "/PolygonToCellMap",
             post(|e| polygon_handler_json(e, bydistance)),
+        )
+        .route(
+            "/PolygonToCellMapFrontiers",
+            post(|e| polygon_handler_frontiers_json(e, bydistance_frontiers)),
         )
         .route(
             "/PolygonToCellMapShm",
@@ -64,4 +71,31 @@ fn bydistance(mut map: LocalMap<CellMap>) -> LocalMap<CellMap> {
     }
 
     map
+}
+
+fn bydistance_frontiers(map: LocalMap<CellMap>) -> LocalMap<CellMap> {
+    bydistance(map).set_frontiers()
+}
+
+trait Frontiers {
+    fn set_frontiers(self) -> Self;
+}
+
+impl Frontiers for LocalMap<CellMap> {
+    fn set_frontiers(self) -> Self {
+        let width: u32 = self.map().width() as u32;
+        let height: u32 = self.map().height() as u32;
+        let img = image::ImageBuffer::from_fn(width, height, |x, y| -> image::Luma<u8> {
+            let (row, col) = (y as usize, x as usize);
+            let cell: LocationType = self.map().cells()[[row, col]];
+            match cell {
+                MapState::Assigned => image::Luma([255]),
+                _ => image::Luma([0]),
+            }
+        });
+
+        img.save("test-image.png").unwrap();
+
+        self
+    }
 }

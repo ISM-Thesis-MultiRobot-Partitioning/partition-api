@@ -228,6 +228,16 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "7a81dae078cea95a014a339291cec439d2f232ebe854a9d672b796c6afafa9b7"
 
 [[package]]
+name = "edge-detection"
+version = "0.2.6"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "6cfd0df5ef5189cbf211738802cd3dd3d0080b3be3104b3903cde02a71b57f1a"
+dependencies = [
+ "image",
+ "rayon",
+]
+
+[[package]]
 name = "either"
 version = "1.8.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -885,6 +895,8 @@ name = "partition-api"
 version = "0.1.0"
 dependencies = [
  "axum",
+ "edge-detection",
+ "image",
  "local-robot-map",
  "serde",
  "serde_json",

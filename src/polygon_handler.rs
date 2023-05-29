@@ -3,6 +3,7 @@ mod types;
 
 mod http;
 pub use http::polygon_handler_json;
+pub use http::polygon_handler_frontiers_json;
 
 mod shared_memory;
 pub use shared_memory::polygon_handler_shm;

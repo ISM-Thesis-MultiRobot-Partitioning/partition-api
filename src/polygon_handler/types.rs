@@ -27,6 +27,16 @@ impl From<&Coords> for CoordXYZ {
     }
 }
 
+impl From<&RealWorldLocation> for CoordXYZ {
+    fn from(value: &RealWorldLocation) -> Self {
+        CoordXYZ {
+            x: value.x,
+            y: value.y,
+            z: value.z,
+        }
+    }
+}
+
 impl From<&AxisResolution> for CoordXYZ {
     fn from(value: &AxisResolution) -> Self {
         CoordXYZ {
@@ -71,6 +81,18 @@ impl OutputData {
                 .collect(),
             offset: map.offset().into(),
             resolution: map.resolution().into(),
+        }
+    }
+
+    pub(super) fn new(
+        cells: Vec<(CoordXYZ, &'static str)>,
+        offset: CoordXYZ,
+        resolution: CoordXYZ,
+    ) -> Self {
+        Self {
+            cells,
+            offset,
+            resolution,
         }
     }
 }
