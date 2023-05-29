@@ -9,7 +9,7 @@ pub(super) fn make_localmap(
     my_position: RealWorldLocation,
     other_positions: Vec<RealWorldLocation>,
 ) -> LocalMap<CellMap> {
-    let map = LocalMap::new_noexpand(
+    let map = LocalMap::new_noexpand_nooutofmap(
         PolygonMap::new(vertices).to_cell_map(resolution),
         my_position,
         other_positions,
