@@ -3,10 +3,7 @@ use axum::routing::{get, post};
 use axum::Router;
 
 mod polygon_handler;
-use polygon_handler::{
-    polygon_handler_filepath, polygon_handler_frontiers_json, polygon_handler_json,
-    polygon_handler_shm,
-};
+use polygon_handler::*;
 
 mod partition_schemes;
 use partition_schemes as ps;
@@ -22,6 +19,10 @@ async fn main() {
         .route(
             "/PolygonToCellMapFrontiers",
             post(|e| polygon_handler_frontiers_json(e, ps::bydistance_frontiers)),
+        )
+        .route(
+            "/PolygonToCellMapContours",
+            post(|e| polygon_handler_frontiers_json(e, ps::bydistance_contours)),
         )
         .route(
             "/PolygonToCellMapShm",
