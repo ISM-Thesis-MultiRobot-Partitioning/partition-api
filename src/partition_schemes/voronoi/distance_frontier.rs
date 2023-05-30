@@ -1,3 +1,6 @@
+//! Same as [`super::distance`], except that the border region of the
+//! [`MapState::Assigned`] area is marked using [`edge_detection`].
+
 use local_robot_map::Location;
 use local_robot_map::{Cell, CellMap, Coords, LocalMap, LocationType, MapState, RealWorldLocation};
 
