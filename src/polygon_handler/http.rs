@@ -44,18 +44,18 @@ pub async fn polygon_handler_frontiers_json(
         Ok(map) => {
             println!("Partitioned map ({:?})", now.elapsed());
             Ok((
-                    StatusCode::OK,
-                    Json(types::OutputData::new(
-                        map.map()
-                            .get_map_state(MapState::Frontier)
-                            .iter()
-                            .map(|c| (c.location().into(), c.value().into()))
-                            .collect(),
-                        map.map().offset().into(),
-                        map.map().resolution().into(),
-                    )),
-                ))
-        },
+                StatusCode::OK,
+                Json(types::OutputData::new(
+                    map.map()
+                        .get_map_state(MapState::Frontier)
+                        .iter()
+                        .map(|c| (c.location().into(), c.value().into()))
+                        .collect(),
+                    map.map().offset().into(),
+                    map.map().resolution().into(),
+                )),
+            ))
+        }
         Err(e) => match e {
             NoPartitioningAlgorithm => Err((
                 StatusCode::NOT_IMPLEMENTED,
