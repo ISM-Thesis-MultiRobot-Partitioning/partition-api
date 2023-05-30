@@ -84,6 +84,10 @@ impl OutputData {
         }
     }
 
+    /// Creates a new [`OutputData`].
+    ///
+    /// Note that the `cells` takes a tuple as input. It has the following
+    /// meaning: *(the coordinate, string indicating [`LocationType`])*.
     pub(super) fn new(
         cells: Vec<(CoordXYZ, &'static str)>,
         offset: CoordXYZ,
