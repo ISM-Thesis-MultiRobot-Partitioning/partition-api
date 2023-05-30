@@ -14,10 +14,13 @@ pub async fn polygon_handler_json(
     println!("=== Request received! ===");
     let now = Instant::now();
     let result = match helpers::partition_input_data(data, algorithm) {
-        Ok(map) => Ok((
-            StatusCode::OK,
-            Json(types::OutputData::from_cellmap(map.map())),
-        )),
+        Ok(map) => {
+            println!("Partitioned map ({:?})", now.elapsed());
+            Ok((
+                StatusCode::OK,
+                Json(types::OutputData::from_cellmap(map.map())),
+            ))
+        }
         Err(e) => match e {
             NoPartitioningAlgorithm => Err((
                 StatusCode::NOT_IMPLEMENTED,
@@ -25,6 +28,7 @@ pub async fn polygon_handler_json(
             )),
         },
     };
+    println!("Finished processing data ({:?})", now.elapsed());
 
     println!("Time elapsed: {:?}", now.elapsed());
     result
@@ -37,18 +41,21 @@ pub async fn polygon_handler_frontiers_json(
     println!("=== Request received! ===");
     let now = Instant::now();
     let result = match helpers::partition_input_data(data, algorithm) {
-        Ok(map) => Ok((
-            StatusCode::OK,
-            Json(types::OutputData::new(
-                map.map()
-                    .get_map_state(MapState::Frontier)
-                    .iter()
-                    .map(|c| (c.location().into(), c.value().into()))
-                    .collect(),
-                map.map().offset().into(),
-                map.map().resolution().into(),
-            )),
-        )),
+        Ok(map) => {
+            println!("Partitioned map ({:?})", now.elapsed());
+            Ok((
+                    StatusCode::OK,
+                    Json(types::OutputData::new(
+                        map.map()
+                            .get_map_state(MapState::Frontier)
+                            .iter()
+                            .map(|c| (c.location().into(), c.value().into()))
+                            .collect(),
+                        map.map().offset().into(),
+                        map.map().resolution().into(),
+                    )),
+                ))
+        },
         Err(e) => match e {
             NoPartitioningAlgorithm => Err((
                 StatusCode::NOT_IMPLEMENTED,
@@ -56,6 +63,7 @@ pub async fn polygon_handler_frontiers_json(
             )),
         },
     };
+    println!("Finished processing data ({:?})", now.elapsed());
 
     println!("Time elapsed: {:?}", now.elapsed());
     result
