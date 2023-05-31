@@ -51,8 +51,8 @@ pub async fn polygon_handler_frontiers_json(
                         .iter()
                         .map(|c| (c.location().into(), c.value().into()))
                         .collect(),
-                    map.map().offset().into(),
-                    map.map().resolution().into(),
+                    (&Coords::new(0.0, 0.0, 0.0)).into(),
+                    (&<AxisResolution as Default>::default()).into(),
                 )),
             ))
         }
