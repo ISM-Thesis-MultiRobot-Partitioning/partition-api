@@ -1,12 +1,22 @@
 use std::time::Instant;
 
 use axum::{http::StatusCode, Json};
+use local_robot_map::{AxisResolution, Coords, MapState, MaskMapState};
 use local_robot_map::{CellMap, LocalMap, PartitionError::NoPartitioningAlgorithm};
-use local_robot_map::{MapState, MaskMapState};
 
 use super::helpers;
 use super::types;
 
+/// Partitiong a polygon map and return all cells.
+///
+/// Returns all cells in matrix coordinates. Corresponding offset and resolution
+/// will also be provided to let the client convert the coordinates into
+/// real-world locations.
+///
+/// # Errors
+///
+/// This function will return an error if no partitioning algorithm was
+/// provided.
 pub async fn polygon_handler_json(
     Json(data): Json<types::InputData>,
     algorithm: fn(LocalMap<CellMap>) -> LocalMap<CellMap>,
@@ -34,6 +44,16 @@ pub async fn polygon_handler_json(
     result
 }
 
+/// Partition a polygon and return only border cells of assigned region.
+///
+/// Returns all the cells marked as [`MapState::Frontier`] in real-world
+/// coordinates. Liberty has been taking in interpreting the *frontier* to be
+/// the border between [`MapState::Assigned`] and everything else.
+///
+/// # Errors
+///
+/// This function will return an error if no partitioning algorithm was
+/// provided.
 pub async fn polygon_handler_frontiers_json(
     Json(data): Json<types::InputData>,
     algorithm: fn(LocalMap<CellMap>) -> LocalMap<CellMap>,

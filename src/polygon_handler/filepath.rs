@@ -6,6 +6,22 @@ use local_robot_map::{CellMap, LocalMap, PartitionError::NoPartitioningAlgorithm
 use super::helpers;
 use super::types;
 
+/// Partitiong a polygon map and return all cells. Uses a file for data sharing.
+///
+/// Returns all cells in matrix coordinates. Corresponding offset and resolution
+/// will also be provided to let the client convert the coordinates into
+/// real-world locations.
+///
+/// It works the same as [`crate::polygon_handler::polygon_handler_json`].
+///
+/// # Errors
+///
+/// This function will return an error if
+/// - no partitioning algorithm was provided
+/// - JSON string could not be interpreted
+/// - Data could not be formed into JSON (internal error)
+/// - File could not be read for input data
+/// - File could not be written for output data
 pub async fn polygon_handler_filepath(
     file_path: String,
     algorithm: fn(LocalMap<CellMap>) -> LocalMap<CellMap>,
