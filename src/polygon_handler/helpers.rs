@@ -1,6 +1,6 @@
 use local_robot_map::{
-    AxisResolution, CellMap, LocalMap, Partition, PartitionError, PolygonMap, RealWorldLocation,
-    Visualize,
+    AxisResolution, CellMap, LocalMap, Partition, PartitionError, PolygonMap, PolygonMapError,
+    RealWorldLocation, Visualize,
 };
 
 pub(super) fn make_localmap(
@@ -8,9 +8,9 @@ pub(super) fn make_localmap(
     resolution: AxisResolution,
     my_position: RealWorldLocation,
     other_positions: Vec<RealWorldLocation>,
-) -> LocalMap<CellMap> {
+) -> Result<LocalMap<CellMap>, PolygonMapError> {
     let map = LocalMap::new_noexpand_nooutofmap(
-        PolygonMap::new(vertices).to_cell_map(resolution),
+        PolygonMap::new(vertices)?.to_cell_map(resolution),
         my_position,
         other_positions,
     )
@@ -25,7 +25,7 @@ pub(super) fn make_localmap(
     );
     println!("Map offset {:?}", map.map().offset());
 
-    map
+    Ok(map)
 }
 
 /// Takes care of the heavy lifting for transforming the data.
@@ -44,7 +44,7 @@ pub(super) fn partition_input_data(
     data: super::types::InputData,
     algorithm: fn(LocalMap<CellMap>) -> LocalMap<CellMap>,
 ) -> Result<LocalMap<CellMap>, PartitionError> {
-    let mut map: LocalMap<CellMap> = make_localmap(
+    let mut map: LocalMap<CellMap> = match make_localmap(
         data.vertices
             .into_iter()
             .map(|v| v.into_real_world())
@@ -55,7 +55,12 @@ pub(super) fn partition_input_data(
             .into_iter()
             .map(|v| v.into_real_world())
             .collect(),
-    );
+    ) {
+        Ok(m) => m,
+        Err(e) => match e {
+            PolygonMapError::NotEnoughVertices => return Err(PartitionError::NoMap),
+        },
+    };
     map.set_partition_algorithm(algorithm);
     let map = map.partition();
     if let Ok(ref map) = map {

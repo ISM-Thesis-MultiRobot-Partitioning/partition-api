@@ -1,7 +1,8 @@
 use std::time::Instant;
 
 use axum::{http::StatusCode, Json};
-use local_robot_map::{CellMap, LocalMap, PartitionError::NoPartitioningAlgorithm};
+use local_robot_map::PartitionError;
+use local_robot_map::{CellMap, LocalMap};
 
 use super::helpers;
 use super::types;
@@ -38,10 +39,11 @@ pub async fn polygon_handler_shm(
             Ok(StatusCode::OK)
         }
         Err(e) => match e {
-            NoPartitioningAlgorithm => Err((
+            PartitionError::NoPartitioningAlgorithm => Err((
                 StatusCode::NOT_IMPLEMENTED,
                 "No partitioning algorithm was provided",
             )),
+            PartitionError::NoMap => Err((StatusCode::BAD_REQUEST, "No viable map was provided")),
         },
     };
 

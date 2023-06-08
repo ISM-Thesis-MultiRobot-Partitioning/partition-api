@@ -2,7 +2,7 @@ use std::time::Instant;
 
 use axum::{http::StatusCode, Json};
 use local_robot_map::{AxisResolution, Coords, MapState, MaskMapState};
-use local_robot_map::{CellMap, LocalMap, PartitionError::NoPartitioningAlgorithm};
+use local_robot_map::{CellMap, LocalMap, PartitionError};
 
 use super::helpers;
 use super::types;
@@ -16,7 +16,7 @@ use super::types;
 /// # Errors
 ///
 /// This function will return an error if no partitioning algorithm was
-/// provided.
+/// provided or if no viable map was provided through the input polygon points.
 pub async fn polygon_handler_json(
     Json(data): Json<types::InputData>,
     algorithm: fn(LocalMap<CellMap>) -> LocalMap<CellMap>,
@@ -33,10 +33,11 @@ pub async fn polygon_handler_json(
             ))
         }
         Err(e) => match e {
-            NoPartitioningAlgorithm => Err((
+            PartitionError::NoPartitioningAlgorithm => Err((
                 StatusCode::NOT_IMPLEMENTED,
                 "No partitioning algortihm was provided",
             )),
+            PartitionError::NoMap => Err((StatusCode::BAD_REQUEST, "No viable map was provided")),
         },
     };
     println!("Finished processing data ({:?})", now.elapsed());
@@ -54,7 +55,7 @@ pub async fn polygon_handler_json(
 /// # Errors
 ///
 /// This function will return an error if no partitioning algorithm was
-/// provided.
+/// provided or if no viable map was provided through the input polygon points.
 pub async fn polygon_handler_frontiers_json(
     Json(data): Json<types::InputData>,
     algorithm: fn(LocalMap<CellMap>) -> LocalMap<CellMap>,
@@ -79,10 +80,11 @@ pub async fn polygon_handler_frontiers_json(
             ))
         }
         Err(e) => match e {
-            NoPartitioningAlgorithm => Err((
+            PartitionError::NoPartitioningAlgorithm => Err((
                 StatusCode::NOT_IMPLEMENTED,
                 "No partitioning algortihm was provided",
             )),
+            PartitionError::NoMap => Err((StatusCode::BAD_REQUEST, "No viable map was provided")),
         },
     };
     println!("Finished processing data ({:?})", now.elapsed());
