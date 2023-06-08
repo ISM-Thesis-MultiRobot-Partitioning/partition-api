@@ -1,7 +1,7 @@
 use std::time::Instant;
 
 use axum::{http::StatusCode, Json};
-use local_robot_map::{AxisResolution, Coords, MapState, MaskMapState};
+use local_robot_map::{AxisResolution, Coords, LocationType, MaskMapState};
 use local_robot_map::{CellMap, LocalMap, PartitionError};
 
 use super::helpers;
@@ -48,9 +48,9 @@ pub async fn polygon_handler_json(
 
 /// Partition a polygon and return only border cells of assigned region.
 ///
-/// Returns all the cells marked as [`MapState::Frontier`] in real-world
+/// Returns all the cells marked as [`LocationType::Frontier`] in real-world
 /// coordinates. Liberty has been taking in interpreting the *frontier* to be
-/// the border between [`MapState::Assigned`] and everything else.
+/// the border between [`LocationType::Assigned`] and everything else.
 ///
 /// # Errors
 ///
@@ -70,7 +70,7 @@ pub async fn polygon_handler_frontiers_json(
                 StatusCode::OK,
                 Json(types::OutputData::new(
                     map.map()
-                        .get_map_state(MapState::Frontier)
+                        .get_map_state(LocationType::Frontier)
                         .iter()
                         .map(|c| (c.location().into(), c.value().into()))
                         .collect(),

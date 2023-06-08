@@ -1,15 +1,15 @@
 //! Same as [`super::distance`], except that the border region of the
-//! [`MapState::Assigned`] area is marked using [`edge_detection`].
+//! [`LocationType::Assigned`] area is marked using [`edge_detection`].
 
 use local_robot_map::Location;
-use local_robot_map::{Cell, CellMap, Coords, LocalMap, LocationType, MapState, RealWorldLocation};
+use local_robot_map::{Cell, CellMap, Coords, LocalMap, LocationType, RealWorldLocation};
 
 pub fn bydistance_frontiers(map: LocalMap<CellMap>) -> LocalMap<CellMap> {
     super::distance::bydistance(map).set_frontiers()
 }
 
-/// We shall take the liberty of interpreting the [`MapState::Frontier`] to be
-/// the frontier between the [`MapState::Assigned`] region and everything else.
+/// We shall take the liberty of interpreting the [`LocationType::Frontier`] to be
+/// the frontier between the [`LocationType::Assigned`] region and everything else.
 /// It allows us to neatly embed everything without introducing additional
 /// types.
 trait Frontiers {
@@ -24,7 +24,7 @@ impl Frontiers for LocalMap<CellMap> {
             let (row, col) = (y as usize, x as usize);
             let cell: LocationType = self.map().cells()[[row, col]];
             match cell {
-                MapState::Assigned => image::Luma([255]),
+                LocationType::Assigned => image::Luma([255]),
                 _ => image::Luma([0]),
             }
         });

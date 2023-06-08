@@ -1,20 +1,20 @@
 //! Same as [`super::distance`], except that the border region of the
-//! [`MapState::Assigned`] area is marked using [`edge_detection`].
+//! [`LocationType::Assigned`] area is marked using [`edge_detection`].
 
 use imageproc::{
     contours::{find_contours, BorderType, Contour},
     point::Point,
 };
 use local_robot_map::{
-    Cell, CellMap, Coords, LocalMap, Location, LocationType, MapState, RealWorldLocation,
+    Cell, CellMap, Coords, LocalMap, Location, LocationType, RealWorldLocation,
 };
 
 pub fn bydistance_contours(map: LocalMap<CellMap>) -> LocalMap<CellMap> {
     super::distance::bydistance(map).set_frontiers()
 }
 
-/// We shall take the liberty of interpreting the [`MapState::Frontier`] to be
-/// the frontier between the [`MapState::Assigned`] region and everything else.
+/// We shall take the liberty of interpreting the [`LocationType::Frontier`] to be
+/// the frontier between the [`LocationType::Assigned`] region and everything else.
 /// It allows us to neatly embed everything without introducing additional
 /// types.
 trait Frontiers {
@@ -30,7 +30,7 @@ impl Frontiers for LocalMap<CellMap> {
                 let (row, col) = (y as usize, x as usize);
                 let cell: LocationType = self.map().cells()[[row, col]];
                 match cell {
-                    MapState::Assigned => image::Luma([255]),
+                    LocationType::Assigned => image::Luma([255]),
                     _ => image::Luma([0]),
                 }
             });
@@ -47,7 +47,7 @@ impl Frontiers for LocalMap<CellMap> {
                             Coords::new(point.x as f64, point.y as f64, 0.0),
                             *self.map().offset(),
                             *self.map().resolution(),
-                            &MapState::Frontier,
+                            &LocationType::Frontier,
                         )
                         .expect("Locations are in the map")
                         .location()
@@ -60,7 +60,7 @@ impl Frontiers for LocalMap<CellMap> {
         for locations in contours {
             for location in locations {
                 self.map_mut()
-                    .set_location(&location, MapState::Frontier)
+                    .set_location(&location, LocationType::Frontier)
                     .expect("Locations are in the map");
             }
         }
