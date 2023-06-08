@@ -22,6 +22,7 @@ pub async fn polygon_handler_json(
     algorithm: fn(LocalMap<CellMap>) -> LocalMap<CellMap>,
 ) -> Result<(StatusCode, Json<types::OutputData>), (StatusCode, &'static str)> {
     println!("=== Request received! ===");
+    println!(">>> Partition map and return all cells");
     let now = Instant::now();
     let result = match helpers::partition_input_data(data, algorithm) {
         Ok(map) => {
@@ -59,6 +60,7 @@ pub async fn polygon_handler_frontiers_json(
     algorithm: fn(LocalMap<CellMap>) -> LocalMap<CellMap>,
 ) -> Result<(StatusCode, Json<types::OutputData>), (StatusCode, &'static str)> {
     println!("=== Request received! ===");
+    println!(">>> Partition map and return frontier cells (edge of assigned region)");
     let now = Instant::now();
     let result = match helpers::partition_input_data(data, algorithm) {
         Ok(map) => {

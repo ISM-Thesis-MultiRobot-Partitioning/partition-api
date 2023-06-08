@@ -24,6 +24,7 @@ pub async fn polygon_handler_shm(
 ) -> Result<StatusCode, (StatusCode, &'static str)> {
     #![allow(unreachable_code, unused_variables)]
     println!("=== Request received! ===");
+    println!(">>> Partition map and return all cells (uses shared memory)");
     return Err((
         StatusCode::NOT_IMPLEMENTED,
         "TODO: Write JSON back to shared memory",

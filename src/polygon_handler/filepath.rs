@@ -27,6 +27,7 @@ pub async fn polygon_handler_filepath(
     algorithm: fn(LocalMap<CellMap>) -> LocalMap<CellMap>,
 ) -> Result<StatusCode, (StatusCode, String)> {
     println!("=== Request received! ===");
+    println!(">>> Partition map and return all cells (uses file to share data)");
     println!("File path: {}", file_path);
     let now = Instant::now();
 
