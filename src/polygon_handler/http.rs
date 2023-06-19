@@ -103,6 +103,13 @@ pub async fn polygon_handler_frontiers_json(
 ///
 /// Inpsired by this answer: <https://stackoverflow.com/a/6989383>
 ///
+/// # CAREFUL
+///
+/// This handler returns a **modified** shape of the *actual* frontier. This may
+/// lead to overlaps with [`LocationType::Assigned`] zones of other robots or
+/// lead to entirely uncovered regions. The exact contours may not exactly
+/// follow the initial region as well.
+///
 /// # Errors
 ///
 /// This function will return an error if no partitioning algorithm was
@@ -160,6 +167,10 @@ pub async fn polygon_handler_contours_convex_hull(
 
 /// Same as [`polygon_handler_frontiers_json`], except that the frontiers being
 /// returned are the result of a *concave hull* operation.
+///
+/// # CAREFUL
+///
+/// Please see [`polygon_handler_contours_convex_hull`] equally named section.
 ///
 /// # Errors
 ///
