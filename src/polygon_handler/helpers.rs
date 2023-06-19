@@ -69,3 +69,16 @@ pub(super) fn partition_input_data(
     }
     map
 }
+
+/// Compute polar angle of a point relative to a centroid.
+///
+/// The points are not assumed to be in the centroid's reference frame. This
+/// function will handle the conversion and calculate the angle accordingly
+/// using [`f64::atan2`].
+///
+/// Inspired by:
+/// - <https://en.wikipedia.org/wiki/Polar_coordinate_system#Converting_between_polar_and_Cartesian_coordinates>
+/// - <https://stackoverflow.com/a/6989383>
+pub(super) fn compute_polar_angle(point: &RealWorldLocation, centroid: &RealWorldLocation) -> f64 {
+    (point.x - centroid.x).atan2(point.y - centroid.y)
+}
