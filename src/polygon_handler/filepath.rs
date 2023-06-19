@@ -22,6 +22,7 @@ use super::types;
 /// - Data could not be formed into JSON (internal error)
 /// - File could not be read for input data
 /// - File could not be written for output data
+/// - No viable map was provided through the input polygon points
 pub async fn polygon_handler_filepath(
     file_path: String,
     algorithm: fn(LocalMap<CellMap>) -> LocalMap<CellMap>,

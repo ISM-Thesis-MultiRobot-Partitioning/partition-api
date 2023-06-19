@@ -39,7 +39,8 @@ pub(super) fn make_localmap(
 ///
 /// # Errors
 ///
-/// This function will return a [`PartitionError`] if the partitioning failed.
+/// This function will return a [`PartitionError`] if the partitioning failed. A
+/// [`PolygonMapError`] can also cause an error to be returned.
 pub(super) fn partition_input_data(
     data: super::types::InputData,
     algorithm: fn(LocalMap<CellMap>) -> LocalMap<CellMap>,

@@ -18,7 +18,7 @@ use super::types;
 /// # Errors
 ///
 /// This function will return an error if no partitioning algorithm was
-/// provided.
+/// provided or if no viable map was provided through the input polygon points.
 pub async fn polygon_handler_shm(
     Json(data): Json<types::InputData>,
     algorithm: fn(LocalMap<CellMap>) -> LocalMap<CellMap>,
