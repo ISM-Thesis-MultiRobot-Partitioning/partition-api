@@ -439,6 +439,21 @@ dependencies = [
 ]
 
 [[package]]
+name = "geo"
+version = "0.25.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "c07ac450e9e7d8c08e58d2723d46bd0328bb6cc1d7b18f4f37a1e15a311098b0"
+dependencies = [
+ "float_next_after",
+ "geo-types",
+ "geographiclib-rs",
+ "log",
+ "num-traits",
+ "robust",
+ "rstar 0.10.0",
+]
+
+[[package]]
 name = "geo-rasterize"
 version = "0.1.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -970,6 +985,7 @@ version = "0.1.0"
 dependencies = [
  "axum",
  "edge-detection",
+ "geo 0.25.0",
  "image",
  "imageproc",
  "local-robot-map",

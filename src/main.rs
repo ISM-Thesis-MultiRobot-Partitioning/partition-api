@@ -25,6 +25,10 @@ async fn main() {
             post(|e| polygon_handler_frontiers_json(e, ps::bydistance_contours)),
         )
         .route(
+            "/PolygonToCellMapConvexHull",
+            post(|e| polygon_handler_contours_convex_hull(e, ps::bydistance_contours)),
+        )
+        .route(
             "/PolygonToCellMapShm",
             post(|e| polygon_handler_shm(e, ps::bydistance)),
         )
