@@ -101,7 +101,7 @@ pub async fn polygon_handler_frontiers_json(
 /// being simplified, thus resulting in an ever so slightly decrease in points
 /// being returned.
 ///
-/// Inpsired by this answer: <https://stackoverflow.com/questions/6989100/sort-points-in-clockwise-order/6989383#6989383>
+/// Inpsired by this answer: <https://stackoverflow.com/a/6989383>
 ///
 /// # Errors
 ///
