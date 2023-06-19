@@ -80,5 +80,5 @@ pub(super) fn partition_input_data(
 /// - <https://en.wikipedia.org/wiki/Polar_coordinate_system#Converting_between_polar_and_Cartesian_coordinates>
 /// - <https://stackoverflow.com/a/6989383>
 pub(super) fn compute_polar_angle(point: &RealWorldLocation, centroid: &RealWorldLocation) -> f64 {
-    (point.x - centroid.x).atan2(point.y - centroid.y)
+    (point.y - centroid.y).atan2(point.x - centroid.x)
 }
