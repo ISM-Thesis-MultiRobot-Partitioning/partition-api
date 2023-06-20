@@ -266,33 +266,39 @@ pub async fn polygon_handler_contours_polar_sort(
             );
             println!("Transformed to polygon ({:?})", now.elapsed());
 
-            let centroid: RealWorldLocation = match geo::Centroid::centroid(&polygon) {
-                Some(c) => RealWorldLocation::from_xyz(c.x(), c.y(), 0.0),
-                None => panic!("Invalid polygon with an invalid centroid"),
-            };
-            println!("Found centroid ({:?}) ({:?})", now.elapsed(), centroid);
-            let mut points: Vec<RealWorldLocation> = polygon
-                .exterior_coords_iter()
-                .map(|geo::Coord { x, y }| RealWorldLocation::from_xyz(x, y, 0.0))
-                .collect();
-            points.sort_by(|a, b| {
-                helpers::compute_polar_angle(a, &centroid)
-                    .partial_cmp(&helpers::compute_polar_angle(b, &centroid))
-                    .expect("Ordering f64 works")
-            });
-            println!("Sorted points ({:?})", now.elapsed());
+            match geo::Centroid::centroid(&polygon) {
+                Some(c) => {
+                    let centroid = RealWorldLocation::from_xyz(c.x(), c.y(), 0.0);
+                    println!("Found centroid ({:?}) ({:?})", now.elapsed(), centroid);
 
-            Ok((
-                StatusCode::OK,
-                Json(types::OutputData::new(
-                    points
-                        .iter()
-                        .map(|p| (p.into(), (&LocationType::Frontier).into()))
-                        .collect(),
-                    (&Coords::new(0.0, 0.0, 0.0)).into(),
-                    (&<AxisResolution as Default>::default()).into(),
+                    let mut points: Vec<RealWorldLocation> = polygon
+                        .exterior_coords_iter()
+                        .map(|geo::Coord { x, y }| RealWorldLocation::from_xyz(x, y, 0.0))
+                        .collect();
+                    points.sort_by(|a, b| {
+                        helpers::compute_polar_angle(a, &centroid)
+                            .partial_cmp(&helpers::compute_polar_angle(b, &centroid))
+                            .expect("Ordering f64 works")
+                    });
+                    println!("Sorted points ({:?})", now.elapsed());
+
+                    Ok((
+                        StatusCode::OK,
+                        Json(types::OutputData::new(
+                            points
+                                .iter()
+                                .map(|p| (p.into(), (&LocationType::Frontier).into()))
+                                .collect(),
+                            (&Coords::new(0.0, 0.0, 0.0)).into(),
+                            (&<AxisResolution as Default>::default()).into(),
+                        )),
+                    ))
+                }
+                None => Err((
+                    StatusCode::BAD_REQUEST,
+                    "Assigned region with an invalid polygon centroid",
                 )),
-            ))
+            }
         }
         Err(e) => match e {
             PartitionError::NoPartitioningAlgorithm => Err((
