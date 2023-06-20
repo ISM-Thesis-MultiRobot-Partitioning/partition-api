@@ -270,7 +270,7 @@ pub async fn polygon_handler_contours_polar_sort(
                 Some(c) => RealWorldLocation::from_xyz(c.x(), c.y(), 0.0),
                 None => panic!("Invalid polygon with an invalid centroid"),
             };
-            println!("Found centroid ({:?})", now.elapsed());
+            println!("Found centroid ({:?}) ({:?})", now.elapsed(), centroid);
             let mut points: Vec<RealWorldLocation> = polygon
                 .exterior_coords_iter()
                 .map(|geo::Coord { x, y }| RealWorldLocation::from_xyz(x, y, 0.0))
