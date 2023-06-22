@@ -70,15 +70,37 @@ pub(super) fn partition_input_data(
     map
 }
 
-/// Compute polar angle of a point relative to a centroid.
+/// Trait for dealing with Polar coordinates given Cartesian coordinates.
 ///
-/// The points are not assumed to be in the centroid's reference frame. This
-/// function will handle the conversion and calculate the angle accordingly
-/// using [`f64::atan2`].
-///
-/// Inspired by:
-/// - <https://en.wikipedia.org/wiki/Polar_coordinate_system#Converting_between_polar_and_Cartesian_coordinates>
-/// - <https://stackoverflow.com/a/6989383>
-pub(super) fn compute_polar_angle(point: &RealWorldLocation, centroid: &RealWorldLocation) -> f64 {
-    (point.y - centroid.y).atan2(point.x - centroid.x)
+/// The points are assumed to not be in the centroid's reference frame. This
+/// trait's functions should handle the translation and perform the calculation
+/// accordingly.
+pub(super) trait Polar {
+    /// Compute the angular coordinate of a point relative to a centroid.
+    ///
+    /// The angle is computed using [`f64::atan2`].
+    ///
+    /// Inspired by:
+    /// - <https://en.wikipedia.org/wiki/Polar_coordinate_system#Converting_between_polar_and_Cartesian_coordinates>
+    /// - <https://stackoverflow.com/a/6989383>
+    fn angular_coordinate(&self, centroid: &Self) -> f64;
+
+    /// Compute radial coordinate (distance) of a point relative to a centroid.
+    ///
+    /// The distance is computed using the euclidean distance.
+    fn radial_coordinate(&self, centroid: &Self) -> f64;
+}
+
+impl Polar for RealWorldLocation {
+    fn angular_coordinate(&self, centroid: &Self) -> f64 {
+        (self.y() - centroid.y()).atan2(self.x() - centroid.x())
+    }
+
+    fn radial_coordinate(&self, centroid: &Self) -> f64 {
+        // we ignore the 3rd dimension
+        let point1 = RealWorldLocation::from_xyz(self.x(), self.y(), 0.0);
+        let point2 = RealWorldLocation::from_xyz(centroid.x(), centroid.y(), 0.0);
+
+        point1.distance(&point2)
+    }
 }

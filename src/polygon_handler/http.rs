@@ -5,6 +5,8 @@ use geo::{ConcaveHull, ConvexHull, CoordsIter};
 use local_robot_map::{AxisResolution, Coords, LocationType, MaskMapState, RealWorldLocation};
 use local_robot_map::{CellMap, LocalMap, PartitionError};
 
+use helpers::Polar;
+
 use super::helpers;
 use super::types;
 
@@ -276,8 +278,8 @@ pub async fn polygon_handler_contours_polar_angular_sort(
                         .map(|geo::Coord { x, y }| RealWorldLocation::from_xyz(x, y, 0.0))
                         .collect();
                     points.sort_by(|a, b| {
-                        helpers::compute_polar_angle(a, &centroid)
-                            .partial_cmp(&helpers::compute_polar_angle(b, &centroid))
+                        a.angular_coordinate(&centroid)
+                            .partial_cmp(&b.angular_coordinate(&centroid))
                             .expect("Ordering f64 works")
                     });
                     println!("Sorted points ({:?})", now.elapsed());
