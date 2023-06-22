@@ -315,3 +315,106 @@ pub async fn polygon_handler_contours_polar_angular_sort(
     println!("Time elapsed: {:?}", now.elapsed());
     result
 }
+
+/// Same as [`polygon_handler_contours_polar_angular_sort`], except that the
+/// frontiers being returned are sorted according to their polar angular AND
+/// radial coordinate (i.e. angle and distance).
+///
+/// In addition to the sorting by angles, we also sort according to which points
+/// are closest. This will solve the issue where lines passing infront of
+/// another will lead to intertwining points from both lines.
+///
+/// # Errors
+///
+/// This function will return an error if no partitioning algorithm was
+/// provided or if no viable map was provided through the input polygon points.
+pub async fn polygon_handler_contours_polar_sort(
+    Json(data): Json<types::InputData>,
+    algorithm: fn(LocalMap<CellMap>) -> LocalMap<CellMap>,
+) -> Result<(StatusCode, Json<types::OutputData>), (StatusCode, &'static str)> {
+    println!("=== Request received! ===");
+    println!(">>> Partition map and return frontier cells (edge of assigned region)");
+    let now = Instant::now();
+
+    let result = match helpers::partition_input_data(data, algorithm) {
+        Ok(map) => {
+            println!("Partitioned map ({:?})", now.elapsed());
+
+            let polygon = geo::Polygon::new(
+                geo::LineString::from(
+                    map.map()
+                        .get_map_state(LocationType::Frontier)
+                        .iter()
+                        .map(|c| (c.location().x(), c.location().y()))
+                        .collect::<Vec<(f64, f64)>>(),
+                ),
+                vec![],
+            );
+            println!("Transformed to polygon ({:?})", now.elapsed());
+
+            match geo::Centroid::centroid(&polygon) {
+                Some(c) => {
+                    let centroid = RealWorldLocation::from_xyz(c.x(), c.y(), 0.0);
+                    println!("Found centroid ({:?}) ({:?})", now.elapsed(), centroid);
+
+                    let mut points: Vec<RealWorldLocation> = polygon
+                        .exterior_coords_iter()
+                        .map(|geo::Coord { x, y }| RealWorldLocation::from_xyz(x, y, 0.0))
+                        .collect();
+                    points.sort_by(|a, b| {
+                        use std::cmp::Ordering;
+                        let angular = a
+                            .angular_coordinate(&centroid)
+                            .partial_cmp(&b.angular_coordinate(&centroid))
+                            .expect("Ordering f64 works");
+                        let radial = a
+                            .radial_coordinate(&centroid)
+                            .partial_cmp(&b.radial_coordinate(&centroid))
+                            .expect("Ordering f64 works");
+                        match angular {
+                            Ordering::Less => match radial {
+                                Ordering::Less => Ordering::Less,
+                                Ordering::Equal => Ordering::Less,
+                                Ordering::Greater => Ordering::Greater,
+                            },
+                            Ordering::Equal => radial,
+                            Ordering::Greater => match radial {
+                                Ordering::Less => Ordering::Less,
+                                Ordering::Equal => Ordering::Greater,
+                                Ordering::Greater => Ordering::Greater,
+                            },
+                        }
+                    });
+                    println!("Sorted points ({:?})", now.elapsed());
+
+                    Ok((
+                        StatusCode::OK,
+                        Json(types::OutputData::new(
+                            points
+                                .iter()
+                                .map(|p| (p.into(), (&LocationType::Frontier).into()))
+                                .collect(),
+                            (&Coords::new(0.0, 0.0, 0.0)).into(),
+                            (&<AxisResolution as Default>::default()).into(),
+                        )),
+                    ))
+                }
+                None => Err((
+                    StatusCode::BAD_REQUEST,
+                    "Assigned region with an invalid polygon centroid",
+                )),
+            }
+        }
+        Err(e) => match e {
+            PartitionError::NoPartitioningAlgorithm => Err((
+                StatusCode::NOT_IMPLEMENTED,
+                "No partitioning algortihm was provided",
+            )),
+            PartitionError::NoMap => Err((StatusCode::BAD_REQUEST, "No viable map was provided")),
+        },
+    };
+    println!("Finished processing data ({:?})", now.elapsed());
+
+    println!("Time elapsed: {:?}", now.elapsed());
+    result
+}
