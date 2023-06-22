@@ -242,7 +242,7 @@ pub async fn polygon_handler_contours_concave_hull(
 ///
 /// This function will return an error if no partitioning algorithm was
 /// provided or if no viable map was provided through the input polygon points.
-pub async fn polygon_handler_contours_polar_sort(
+pub async fn polygon_handler_contours_polar_angular_sort(
     Json(data): Json<types::InputData>,
     algorithm: fn(LocalMap<CellMap>) -> LocalMap<CellMap>,
 ) -> Result<(StatusCode, Json<types::OutputData>), (StatusCode, &'static str)> {

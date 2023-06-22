@@ -25,8 +25,8 @@ async fn main() {
             post(|e| polygon_handler_frontiers_json(e, ps::bydistance_contours)),
         )
         .route(
-            "/PolygonToCellMapContoursSorted",
-            post(|e| polygon_handler_contours_polar_sort(e, ps::bydistance_contours)),
+            "/PolygonToCellMapContoursAngularSorted",
+            post(|e| polygon_handler_contours_polar_angular_sort(e, ps::bydistance_contours)),
         )
         .route(
             "/PolygonToCellMapConvexHull",
