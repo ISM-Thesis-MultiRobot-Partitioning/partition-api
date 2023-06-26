@@ -9,13 +9,21 @@ pub fn bydistance(mut map: LocalMap<CellMap>, factors: Option<Factors>) -> Local
     let mut cells_to_assign: Vec<RealWorldLocation> = Vec::new();
 
     for cell in map.map().get_map_state(LocationType::Unexplored) {
+        if map.other_positions().is_empty() {
+            cells_to_assign.push(cell.location().clone());
+        }
         let my_dist = map.my_position().distance(cell.location());
         let other_dists = map
             .other_positions()
             .iter()
             .map(|loc| loc.distance(cell.location()));
-        if map.other_positions().is_empty() || other_dists.into_iter().all(|dist| my_dist < dist) {
-            cells_to_assign.push(cell.location().clone());
+        match factors {
+            Some(_) => todo!(),
+            None => {
+                if other_dists.into_iter().all(|dist| my_dist < dist) {
+                    cells_to_assign.push(cell.location().clone());
+                }
+            }
         }
     }
 
