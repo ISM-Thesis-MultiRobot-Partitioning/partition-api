@@ -1,4 +1,4 @@
-//! A simply distance based partitioning.
+//! A simple distance based partitioning.
 
 use local_robot_map::{CellMap, LocalMap, LocationType, RealWorldLocation};
 use local_robot_map::{Location, MaskMapState};
