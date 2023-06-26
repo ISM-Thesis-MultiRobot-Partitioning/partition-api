@@ -24,7 +24,7 @@ use super::types;
 /// provided or if no viable map was provided through the input polygon points.
 pub async fn polygon_handler_json(
     Json(data): Json<types::InputData>,
-    algorithm: Algorithm<LocalMap<CellMap, Factors>, Factors>,
+    algorithm: Algorithm<LocalMap<CellMap>, Factors>,
 ) -> Result<(StatusCode, Json<types::OutputData>), (StatusCode, &'static str)> {
     println!("=== Request received! ===");
     println!(">>> Partition map and return all cells");
@@ -38,10 +38,6 @@ pub async fn polygon_handler_json(
             ))
         }
         Err(e) => match e {
-            PartitionError::NoPartitioningAlgorithm => Err((
-                StatusCode::NOT_IMPLEMENTED,
-                "No partitioning algortihm was provided",
-            )),
             PartitionError::NoMap => Err((StatusCode::BAD_REQUEST, "No viable map was provided")),
         },
     };
@@ -63,7 +59,7 @@ pub async fn polygon_handler_json(
 /// provided or if no viable map was provided through the input polygon points.
 pub async fn polygon_handler_frontiers_json(
     Json(data): Json<types::InputData>,
-    algorithm: Algorithm<LocalMap<CellMap, Factors>, Factors>,
+    algorithm: Algorithm<LocalMap<CellMap>, Factors>,
 ) -> Result<(StatusCode, Json<types::OutputData>), (StatusCode, &'static str)> {
     println!("=== Request received! ===");
     println!(">>> Partition map and return frontier cells (edge of assigned region)");
@@ -85,10 +81,6 @@ pub async fn polygon_handler_frontiers_json(
             ))
         }
         Err(e) => match e {
-            PartitionError::NoPartitioningAlgorithm => Err((
-                StatusCode::NOT_IMPLEMENTED,
-                "No partitioning algortihm was provided",
-            )),
             PartitionError::NoMap => Err((StatusCode::BAD_REQUEST, "No viable map was provided")),
         },
     };
@@ -120,7 +112,7 @@ pub async fn polygon_handler_frontiers_json(
 /// provided or if no viable map was provided through the input polygon points.
 pub async fn polygon_handler_contours_convex_hull(
     Json(data): Json<types::InputData>,
-    algorithm: Algorithm<LocalMap<CellMap, Factors>, Factors>,
+    algorithm: Algorithm<LocalMap<CellMap>, Factors>,
 ) -> Result<(StatusCode, Json<types::OutputData>), (StatusCode, &'static str)> {
     println!("=== Request received! ===");
     println!(">>> Partition map and return convex hull contour cells (edge of assigned region)");
@@ -156,10 +148,6 @@ pub async fn polygon_handler_contours_convex_hull(
             ))
         }
         Err(e) => match e {
-            PartitionError::NoPartitioningAlgorithm => Err((
-                StatusCode::NOT_IMPLEMENTED,
-                "No partitioning algortihm was provided",
-            )),
             PartitionError::NoMap => Err((StatusCode::BAD_REQUEST, "No viable map was provided")),
         },
     };
@@ -182,7 +170,7 @@ pub async fn polygon_handler_contours_convex_hull(
 /// provided or if no viable map was provided through the input polygon points.
 pub async fn polygon_handler_contours_concave_hull(
     Json(data): Json<types::InputData>,
-    algorithm: Algorithm<LocalMap<CellMap, Factors>, Factors>,
+    algorithm: Algorithm<LocalMap<CellMap>, Factors>,
 ) -> Result<(StatusCode, Json<types::OutputData>), (StatusCode, &'static str)> {
     println!("=== Request received! ===");
     println!(">>> Partition map and return concave hull contour cells (edge of assigned region)");
@@ -218,10 +206,6 @@ pub async fn polygon_handler_contours_concave_hull(
             ))
         }
         Err(e) => match e {
-            PartitionError::NoPartitioningAlgorithm => Err((
-                StatusCode::NOT_IMPLEMENTED,
-                "No partitioning algortihm was provided",
-            )),
             PartitionError::NoMap => Err((StatusCode::BAD_REQUEST, "No viable map was provided")),
         },
     };
@@ -248,7 +232,7 @@ pub async fn polygon_handler_contours_concave_hull(
 /// provided or if no viable map was provided through the input polygon points.
 pub async fn polygon_handler_contours_polar_angular_sort(
     Json(data): Json<types::InputData>,
-    algorithm: Algorithm<LocalMap<CellMap, Factors>, Factors>,
+    algorithm: Algorithm<LocalMap<CellMap>, Factors>,
 ) -> Result<(StatusCode, Json<types::OutputData>), (StatusCode, &'static str)> {
     println!("=== Request received! ===");
     println!(">>> Partition map and return frontier cells (edge of assigned region)");
@@ -305,10 +289,6 @@ pub async fn polygon_handler_contours_polar_angular_sort(
             }
         }
         Err(e) => match e {
-            PartitionError::NoPartitioningAlgorithm => Err((
-                StatusCode::NOT_IMPLEMENTED,
-                "No partitioning algortihm was provided",
-            )),
             PartitionError::NoMap => Err((StatusCode::BAD_REQUEST, "No viable map was provided")),
         },
     };
@@ -332,7 +312,7 @@ pub async fn polygon_handler_contours_polar_angular_sort(
 /// provided or if no viable map was provided through the input polygon points.
 pub async fn polygon_handler_contours_polar_sort(
     Json(data): Json<types::InputData>,
-    algorithm: Algorithm<LocalMap<CellMap, Factors>, Factors>,
+    algorithm: Algorithm<LocalMap<CellMap>, Factors>,
 ) -> Result<(StatusCode, Json<types::OutputData>), (StatusCode, &'static str)> {
     println!("=== Request received! ===");
     println!(">>> Partition map and return frontier cells (edge of assigned region)");
@@ -408,10 +388,6 @@ pub async fn polygon_handler_contours_polar_sort(
             }
         }
         Err(e) => match e {
-            PartitionError::NoPartitioningAlgorithm => Err((
-                StatusCode::NOT_IMPLEMENTED,
-                "No partitioning algortihm was provided",
-            )),
             PartitionError::NoMap => Err((StatusCode::BAD_REQUEST, "No viable map was provided")),
         },
     };

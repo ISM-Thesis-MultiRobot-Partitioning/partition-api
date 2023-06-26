@@ -28,7 +28,7 @@ use super::types;
 /// - No viable map was provided through the input polygon points
 pub async fn polygon_handler_filepath(
     file_path: String,
-    algorithm: Algorithm<LocalMap<CellMap, Factors>, Factors>,
+    algorithm: Algorithm<LocalMap<CellMap>, Factors>,
 ) -> Result<StatusCode, (StatusCode, String)> {
     println!("=== Request received! ===");
     println!(">>> Partition map and return all cells (uses file to share data)");
@@ -83,10 +83,6 @@ pub async fn polygon_handler_filepath(
             }
         }
         Err(e) => match e {
-            PartitionError::NoPartitioningAlgorithm => Err((
-                StatusCode::NOT_IMPLEMENTED,
-                "No partitioning algorithm was provided".into(),
-            )),
             PartitionError::NoMap => Err((StatusCode::BAD_REQUEST, "No viable map was provided".into())),
         },
     };

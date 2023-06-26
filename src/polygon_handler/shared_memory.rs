@@ -23,7 +23,7 @@ use super::types;
 /// provided or if no viable map was provided through the input polygon points.
 pub async fn polygon_handler_shm(
     Json(data): Json<types::InputData>,
-    algorithm: Algorithm<LocalMap<CellMap, Factors>, Factors>,
+    algorithm: Algorithm<LocalMap<CellMap>, Factors>,
 ) -> Result<StatusCode, (StatusCode, &'static str)> {
     #![allow(unreachable_code, unused_variables)]
     println!("=== Request received! ===");
@@ -41,10 +41,6 @@ pub async fn polygon_handler_shm(
             Ok(StatusCode::OK)
         }
         Err(e) => match e {
-            PartitionError::NoPartitioningAlgorithm => Err((
-                StatusCode::NOT_IMPLEMENTED,
-                "No partitioning algorithm was provided",
-            )),
             PartitionError::NoMap => Err((StatusCode::BAD_REQUEST, "No viable map was provided")),
         },
     };

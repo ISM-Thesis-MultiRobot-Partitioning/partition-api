@@ -6,7 +6,7 @@ use local_robot_map::{Cell, CellMap, Coords, LocalMap, LocationType, RealWorldLo
 
 use crate::ps::Factors;
 
-pub fn bydistance_frontiers(map: LocalMap<CellMap, Factors>, factors: Option<Factors>) -> LocalMap<CellMap, Factors> {
+pub fn bydistance_frontiers(map: LocalMap<CellMap>, factors: Option<Factors>) -> LocalMap<CellMap> {
     super::distance::bydistance(map, factors).set_frontiers()
 }
 
@@ -18,7 +18,7 @@ trait Frontiers {
     fn set_frontiers(self) -> Self;
 }
 
-impl Frontiers for LocalMap<CellMap, Factors> {
+impl Frontiers for LocalMap<CellMap> {
     fn set_frontiers(mut self) -> Self {
         let width: u32 = self.map().width() as u32;
         let height: u32 = self.map().height() as u32;
