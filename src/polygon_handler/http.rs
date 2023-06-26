@@ -2,10 +2,12 @@ use std::time::Instant;
 
 use axum::{http::StatusCode, Json};
 use geo::{ConcaveHull, ConvexHull, CoordsIter};
-use local_robot_map::{AxisResolution, Coords, LocationType, MaskMapState, RealWorldLocation};
+use local_robot_map::{AxisResolution, Coords, LocationType, MaskMapState, RealWorldLocation, Algorithm};
 use local_robot_map::{CellMap, LocalMap, PartitionError};
 
 use helpers::Polar;
+
+use crate::ps::Factors;
 
 use super::helpers;
 use super::types;
@@ -22,7 +24,7 @@ use super::types;
 /// provided or if no viable map was provided through the input polygon points.
 pub async fn polygon_handler_json(
     Json(data): Json<types::InputData>,
-    algorithm: fn(LocalMap<CellMap>) -> LocalMap<CellMap>,
+    algorithm: Algorithm<LocalMap<CellMap, Factors>, Factors>,
 ) -> Result<(StatusCode, Json<types::OutputData>), (StatusCode, &'static str)> {
     println!("=== Request received! ===");
     println!(">>> Partition map and return all cells");
@@ -61,7 +63,7 @@ pub async fn polygon_handler_json(
 /// provided or if no viable map was provided through the input polygon points.
 pub async fn polygon_handler_frontiers_json(
     Json(data): Json<types::InputData>,
-    algorithm: fn(LocalMap<CellMap>) -> LocalMap<CellMap>,
+    algorithm: Algorithm<LocalMap<CellMap, Factors>, Factors>,
 ) -> Result<(StatusCode, Json<types::OutputData>), (StatusCode, &'static str)> {
     println!("=== Request received! ===");
     println!(">>> Partition map and return frontier cells (edge of assigned region)");
@@ -118,7 +120,7 @@ pub async fn polygon_handler_frontiers_json(
 /// provided or if no viable map was provided through the input polygon points.
 pub async fn polygon_handler_contours_convex_hull(
     Json(data): Json<types::InputData>,
-    algorithm: fn(LocalMap<CellMap>) -> LocalMap<CellMap>,
+    algorithm: Algorithm<LocalMap<CellMap, Factors>, Factors>,
 ) -> Result<(StatusCode, Json<types::OutputData>), (StatusCode, &'static str)> {
     println!("=== Request received! ===");
     println!(">>> Partition map and return convex hull contour cells (edge of assigned region)");
@@ -180,7 +182,7 @@ pub async fn polygon_handler_contours_convex_hull(
 /// provided or if no viable map was provided through the input polygon points.
 pub async fn polygon_handler_contours_concave_hull(
     Json(data): Json<types::InputData>,
-    algorithm: fn(LocalMap<CellMap>) -> LocalMap<CellMap>,
+    algorithm: Algorithm<LocalMap<CellMap, Factors>, Factors>,
 ) -> Result<(StatusCode, Json<types::OutputData>), (StatusCode, &'static str)> {
     println!("=== Request received! ===");
     println!(">>> Partition map and return concave hull contour cells (edge of assigned region)");
@@ -246,7 +248,7 @@ pub async fn polygon_handler_contours_concave_hull(
 /// provided or if no viable map was provided through the input polygon points.
 pub async fn polygon_handler_contours_polar_angular_sort(
     Json(data): Json<types::InputData>,
-    algorithm: fn(LocalMap<CellMap>) -> LocalMap<CellMap>,
+    algorithm: Algorithm<LocalMap<CellMap, Factors>, Factors>,
 ) -> Result<(StatusCode, Json<types::OutputData>), (StatusCode, &'static str)> {
     println!("=== Request received! ===");
     println!(">>> Partition map and return frontier cells (edge of assigned region)");
@@ -330,7 +332,7 @@ pub async fn polygon_handler_contours_polar_angular_sort(
 /// provided or if no viable map was provided through the input polygon points.
 pub async fn polygon_handler_contours_polar_sort(
     Json(data): Json<types::InputData>,
-    algorithm: fn(LocalMap<CellMap>) -> LocalMap<CellMap>,
+    algorithm: Algorithm<LocalMap<CellMap, Factors>, Factors>,
 ) -> Result<(StatusCode, Json<types::OutputData>), (StatusCode, &'static str)> {
     println!("=== Request received! ===");
     println!(">>> Partition map and return frontier cells (edge of assigned region)");

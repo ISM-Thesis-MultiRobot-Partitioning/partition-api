@@ -1,14 +1,16 @@
 use local_robot_map::{
     AxisResolution, CellMap, LocalMap, Partition, PartitionError, PolygonMap, PolygonMapError,
-    RealWorldLocation, Visualize,
+    RealWorldLocation, Visualize, Algorithm,
 };
+
+use crate::ps::Factors;
 
 pub(super) fn make_localmap(
     vertices: Vec<RealWorldLocation>,
     resolution: AxisResolution,
     my_position: RealWorldLocation,
     other_positions: Vec<RealWorldLocation>,
-) -> Result<LocalMap<CellMap>, PolygonMapError> {
+) -> Result<LocalMap<CellMap, Factors>, PolygonMapError> {
     let map = LocalMap::new_noexpand_nooutofmap(
         PolygonMap::new(vertices)?.to_cell_map(resolution),
         my_position,
@@ -43,9 +45,9 @@ pub(super) fn make_localmap(
 /// [`PolygonMapError`] can also cause an error to be returned.
 pub(super) fn partition_input_data(
     data: super::types::InputData,
-    algorithm: fn(LocalMap<CellMap>) -> LocalMap<CellMap>,
-) -> Result<LocalMap<CellMap>, PartitionError> {
-    let mut map: LocalMap<CellMap> = match make_localmap(
+    algorithm: Algorithm<LocalMap<CellMap, Factors>, Factors>,
+) -> Result<LocalMap<CellMap, Factors>, PartitionError> {
+    let mut map: LocalMap<CellMap, Factors> = match make_localmap(
         data.vertices
             .into_iter()
             .map(|v| v.into_real_world())
@@ -63,7 +65,7 @@ pub(super) fn partition_input_data(
         },
     };
     map.set_partition_algorithm(algorithm);
-    let map = map.partition();
+    let map = map.partition(None);
     if let Ok(ref map) = map {
         map.as_image().save("map.png").unwrap();
     }

@@ -3,7 +3,9 @@
 use local_robot_map::{CellMap, LocalMap, LocationType, RealWorldLocation};
 use local_robot_map::{Location, MaskMapState};
 
-pub fn bydistance(mut map: LocalMap<CellMap>) -> LocalMap<CellMap> {
+use crate::ps::Factors;
+
+pub fn bydistance(mut map: LocalMap<CellMap, Factors>, factors: Option<Factors>) -> LocalMap<CellMap, Factors> {
     let mut cells_to_assign: Vec<RealWorldLocation> = Vec::new();
 
     for cell in map.map().get_map_state(LocationType::Unexplored) {

@@ -1,7 +1,10 @@
 use std::time::Instant;
 
 use axum::http::StatusCode;
+use local_robot_map::Algorithm;
 use local_robot_map::{CellMap, LocalMap, PartitionError};
+
+use crate::ps::Factors;
 
 use super::helpers;
 use super::types;
@@ -25,7 +28,7 @@ use super::types;
 /// - No viable map was provided through the input polygon points
 pub async fn polygon_handler_filepath(
     file_path: String,
-    algorithm: fn(LocalMap<CellMap>) -> LocalMap<CellMap>,
+    algorithm: Algorithm<LocalMap<CellMap, Factors>, Factors>,
 ) -> Result<StatusCode, (StatusCode, String)> {
     println!("=== Request received! ===");
     println!(">>> Partition map and return all cells (uses file to share data)");

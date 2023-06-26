@@ -53,6 +53,7 @@ pub struct InputData {
     pub(crate) resolution: CoordXYZ,
     pub(crate) me: CoordXYZ,
     pub(crate) others: Vec<CoordXYZ>,
+    pub(crate) speed: Option<f64>,
 }
 
 #[derive(Serialize)]
