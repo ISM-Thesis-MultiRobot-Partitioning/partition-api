@@ -7,3 +7,9 @@ use serde::Deserialize;
 pub struct Factors {
     speed: f64,
 }
+
+impl Factors {
+    pub fn speed(&self) -> f64 {
+        self.speed
+    }
+}
