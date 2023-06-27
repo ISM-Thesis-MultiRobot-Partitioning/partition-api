@@ -2,23 +2,24 @@
 //! [`LocationType::Assigned`] area is marked using [`edge_detection`].
 
 use local_robot_map::Location;
-use local_robot_map::{Cell, CellMap, Coords, LocalMap, LocationType, RealWorldLocation};
+use local_robot_map::{Cell, Coords, LocationType, RealWorldLocation};
 
 use crate::ps::Factors;
+use crate::Map;
 
-pub fn bydistance_frontiers(map: LocalMap<CellMap>, factors: Option<Factors>) -> LocalMap<CellMap> {
+pub fn bydistance_frontiers(map: Map, factors: Option<Factors>) -> Map {
     super::distance::bydistance(map, factors).set_frontiers()
 }
 
-/// We shall take the liberty of interpreting the [`LocationType::Frontier`] to be
-/// the frontier between the [`LocationType::Assigned`] region and everything else.
-/// It allows us to neatly embed everything without introducing additional
+/// We shall take the liberty of interpreting the [`LocationType::Frontier`] to
+/// be the frontier between the [`LocationType::Assigned`] region and everything
+/// else. It allows us to neatly embed everything without introducing additional
 /// types.
 trait Frontiers {
     fn set_frontiers(self) -> Self;
 }
 
-impl Frontiers for LocalMap<CellMap> {
+impl Frontiers for Map {
     fn set_frontiers(mut self) -> Self {
         let width: u32 = self.map().width() as u32;
         let height: u32 = self.map().height() as u32;

@@ -55,6 +55,12 @@ pub(crate) struct InputRobot {
     pub(crate) factors: Option<Factors>,
 }
 
+impl From<InputRobot> for crate::RobotLocation {
+    fn from(value: InputRobot) -> Self {
+        crate::RobotLocation::new(value.position.into_real_world(), value.factors)
+    }
+}
+
 #[derive(Deserialize, Debug)]
 pub struct InputData {
     pub(crate) vertices: Vec<CoordXYZ>,

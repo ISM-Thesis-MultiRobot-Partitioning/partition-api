@@ -3,10 +3,15 @@ use axum::routing::{get, post};
 use axum::Router;
 
 mod polygon_handler;
+use local_robot_map::{CellMap, LocalMap, Robot};
 use polygon_handler::*;
 
 mod partition_schemes;
 use partition_schemes as ps;
+use ps::Factors;
+
+pub type Map = LocalMap<CellMap, Option<Factors>>;
+pub type RobotLocation = Robot<Option<Factors>>;
 
 #[tokio::main]
 async fn main() {

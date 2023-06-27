@@ -1,16 +1,16 @@
 use local_robot_map::{
-    Algorithm, AxisResolution, CellMap, LocalMap, Partition, PartitionError, PolygonMap,
-    PolygonMapError, RealWorldLocation, Visualize,
+    Algorithm, AxisResolution, LocalMap, Partition, PartitionError, PolygonMap, PolygonMapError,
+    RealWorldLocation, Visualize,
 };
 
-use crate::ps::Factors;
+use crate::{ps::Factors, Map, RobotLocation};
 
 pub(super) fn make_localmap(
     vertices: Vec<RealWorldLocation>,
     resolution: AxisResolution,
-    my_position: RealWorldLocation,
-    other_positions: Vec<RealWorldLocation>,
-) -> Result<LocalMap<CellMap>, PolygonMapError> {
+    my_position: RobotLocation,
+    other_positions: Vec<RobotLocation>,
+) -> Result<Map, PolygonMapError> {
     let map = LocalMap::new_noexpand_nooutofmap(
         PolygonMap::new(vertices)?.to_cell_map(resolution),
         my_position,
@@ -45,19 +45,16 @@ pub(super) fn make_localmap(
 /// [`PolygonMapError`] can also cause an error to be returned.
 pub(super) fn partition_input_data(
     data: super::types::InputData,
-    algorithm: Algorithm<LocalMap<CellMap>, Factors>,
-) -> Result<LocalMap<CellMap>, PartitionError> {
-    let map: LocalMap<CellMap> = match make_localmap(
+    algorithm: Algorithm<Map, Factors>,
+) -> Result<Map, PartitionError> {
+    let map: Map = match make_localmap(
         data.vertices
             .into_iter()
             .map(|v| v.into_real_world())
             .collect(),
         data.resolution.into_axis_resolution(),
-        data.me.position.into_real_world(),
-        data.others
-            .into_iter()
-            .map(|v| v.position.into_real_world())
-            .collect(),
+        data.me.into(),
+        data.others.into_iter().map(|v| v.into()).collect(),
     ) {
         Ok(m) => m,
         Err(e) => match e {
