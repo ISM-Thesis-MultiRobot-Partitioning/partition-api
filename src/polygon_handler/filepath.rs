@@ -4,7 +4,6 @@ use axum::http::StatusCode;
 use local_robot_map::Algorithm;
 use local_robot_map::PartitionError;
 
-use crate::ps::Factors;
 use crate::Map;
 
 use super::helpers;
@@ -29,7 +28,7 @@ use super::types;
 /// - No viable map was provided through the input polygon points
 pub async fn polygon_handler_filepath(
     file_path: String,
-    algorithm: Algorithm<Map, Factors>,
+    algorithm: Algorithm<Map>,
 ) -> Result<StatusCode, (StatusCode, String)> {
     println!("=== Request received! ===");
     println!(">>> Partition map and return all cells (uses file to share data)");

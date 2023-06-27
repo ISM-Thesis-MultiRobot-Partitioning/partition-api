@@ -7,10 +7,10 @@ use imageproc::{
 };
 use local_robot_map::{Cell, Coords, Location, LocationType, RealWorldLocation};
 
-use crate::{ps::Factors, Map};
+use crate::Map;
 
-pub fn bydistance_contours(map: Map, factors: Option<Factors>) -> Map {
-    super::distance::bydistance(map, factors).set_frontiers()
+pub fn bydistance_contours(map: Map) -> Map {
+    super::distance::bydistance(map).set_frontiers()
 }
 
 /// We shall take the liberty of interpreting the [`LocationType::Frontier`] to

@@ -3,7 +3,6 @@ use std::time::Instant;
 use axum::{http::StatusCode, Json};
 use local_robot_map::{Algorithm, PartitionError};
 
-use crate::ps::Factors;
 use crate::Map;
 
 use super::helpers;
@@ -23,7 +22,7 @@ use super::types;
 /// provided or if no viable map was provided through the input polygon points.
 pub async fn polygon_handler_shm(
     Json(data): Json<types::InputData>,
-    algorithm: Algorithm<Map, Factors>,
+    algorithm: Algorithm<Map>,
 ) -> Result<StatusCode, (StatusCode, &'static str)> {
     #![allow(unreachable_code, unused_variables)]
     println!("=== Request received! ===");

@@ -3,7 +3,7 @@ use local_robot_map::{
     RealWorldLocation, Visualize,
 };
 
-use crate::{ps::Factors, Map, RobotLocation};
+use crate::{Map, RobotLocation};
 
 pub(super) fn make_localmap(
     vertices: Vec<RealWorldLocation>,
@@ -45,7 +45,7 @@ pub(super) fn make_localmap(
 /// [`PolygonMapError`] can also cause an error to be returned.
 pub(super) fn partition_input_data(
     data: super::types::InputData,
-    algorithm: Algorithm<Map, Factors>,
+    algorithm: Algorithm<Map>,
 ) -> Result<Map, PartitionError> {
     let map: Map = match make_localmap(
         data.vertices
@@ -61,7 +61,7 @@ pub(super) fn partition_input_data(
             PolygonMapError::NotEnoughVertices => return Err(PartitionError::NoMap),
         },
     };
-    let map = map.partition(algorithm, None);
+    let map = map.partition(algorithm);
     if let Ok(ref map) = map {
         map.as_image().save("map.png").unwrap();
     }
