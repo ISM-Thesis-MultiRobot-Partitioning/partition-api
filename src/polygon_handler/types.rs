@@ -1,6 +1,8 @@
 use local_robot_map::{AxisResolution, CellMap, Coords, RealWorldLocation};
 use serde::{Deserialize, Serialize};
 
+use crate::ps::Factors;
+
 #[derive(Deserialize, Serialize, Debug)]
 pub(crate) struct CoordXYZ {
     x: f64,
@@ -48,12 +50,17 @@ impl From<&AxisResolution> for CoordXYZ {
 }
 
 #[derive(Deserialize, Debug)]
+pub(crate) struct InputRobot {
+    pub(crate) position: CoordXYZ,
+    pub(crate) factors: Option<Factors>,
+}
+
+#[derive(Deserialize, Debug)]
 pub struct InputData {
     pub(crate) vertices: Vec<CoordXYZ>,
     pub(crate) resolution: CoordXYZ,
-    pub(crate) me: CoordXYZ,
-    pub(crate) others: Vec<CoordXYZ>,
-    pub(crate) speed: Option<f64>,
+    pub(crate) me: InputRobot,
+    pub(crate) others: Vec<InputRobot>,
 }
 
 #[derive(Serialize)]

@@ -53,10 +53,10 @@ pub(super) fn partition_input_data(
             .map(|v| v.into_real_world())
             .collect(),
         data.resolution.into_axis_resolution(),
-        data.me.into_real_world(),
+        data.me.position.into_real_world(),
         data.others
             .into_iter()
-            .map(|v| v.into_real_world())
+            .map(|v| v.position.into_real_world())
             .collect(),
     ) {
         Ok(m) => m,
