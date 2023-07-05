@@ -64,6 +64,7 @@ impl From<InputRobot> for crate::RobotLocation {
 #[derive(Deserialize, Debug)]
 pub struct InputData {
     pub(crate) vertices: Vec<CoordXYZ>,
+    pub(crate) explored: Option<Vec<Vec<CoordXYZ>>>,
     pub(crate) resolution: CoordXYZ,
     pub(crate) me: InputRobot,
     pub(crate) others: Vec<InputRobot>,

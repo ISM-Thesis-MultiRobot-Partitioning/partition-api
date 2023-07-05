@@ -1,18 +1,19 @@
 use local_robot_map::{
-    Algorithm, AxisResolution, LocalMap, Partition, PartitionError, PolygonMap, PolygonMapError,
-    RealWorldLocation, Visualize,
+    Algorithm, AxisResolution, LocalMap, Partition, PartitionError, PolygonMap,
+    PolygonMapError, RealWorldLocation, Visualize,
 };
 
 use crate::{Map, RobotLocation};
 
 pub(super) fn make_localmap(
     vertices: Vec<RealWorldLocation>,
+    explored: Option<Vec<Vec<RealWorldLocation>>>,
     resolution: AxisResolution,
     my_position: RobotLocation,
     other_positions: Vec<RobotLocation>,
 ) -> Result<Map, PolygonMapError> {
     let map = LocalMap::new_noexpand_nooutofmap(
-        PolygonMap::new(vertices)?.to_cell_map(resolution),
+        PolygonMap::new_explored(vertices, explored)?.to_cell_map(resolution),
         my_position,
         other_positions,
     )
@@ -52,13 +53,22 @@ pub(super) fn partition_input_data(
             .into_iter()
             .map(|v| v.into_real_world())
             .collect(),
+        data.explored.map(|e| {
+            e.into_iter()
+                .map(|polygon| {
+                    polygon.into_iter().map(|v| v.into_real_world()).collect()
+                })
+                .collect()
+        }),
         data.resolution.into_axis_resolution(),
         data.me.into(),
         data.others.into_iter().map(|v| v.into()).collect(),
     ) {
         Ok(m) => m,
         Err(e) => match e {
-            PolygonMapError::NotEnoughVertices => return Err(PartitionError::NoMap),
+            PolygonMapError::NotEnoughVertices => {
+                return Err(PartitionError::NoMap)
+            }
         },
     };
     let map = map.partition(algorithm);
@@ -97,7 +107,8 @@ impl Polar for RealWorldLocation {
     fn radial_coordinate(&self, centroid: &Self) -> f64 {
         // we ignore the 3rd dimension
         let point1 = RealWorldLocation::from_xyz(self.x(), self.y(), 0.0);
-        let point2 = RealWorldLocation::from_xyz(centroid.x(), centroid.y(), 0.0);
+        let point2 =
+            RealWorldLocation::from_xyz(centroid.x(), centroid.y(), 0.0);
 
         point1.distance(&point2)
     }
