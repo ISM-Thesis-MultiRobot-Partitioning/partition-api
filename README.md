@@ -23,4 +23,6 @@ $ cargo run --release
 Serving at 0.0.0.0:8000 ...
 ```
 
+Note that the `--release` flag causes an overflow related to a recursion limit. The bug is likely related to this issue: <https://github.com/rust-lang/rust/issues/110475>. One can either not use the `--release` flag and sacrifice performance, or one can use an older version of Rust (i.e. version 1.69 or maybe even 1.70).
+
 [lrm]: https://github.com/ISM-Thesis-MultiRobot-Partitioning/local-robot-map
